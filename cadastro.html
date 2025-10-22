@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>UvaPay - Cadastro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Poppins",sans-serif}
+body{background:linear-gradient(135deg,#2b0047,#3d0068);display:flex;align-items:center;justify-content:center;min-height:100vh;color:#fff;padding:20px}
+.card{width:100%;max-width:520px;background:#1f1f1f;border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,0.4);}
+h1{color:#b184ff;margin-bottom:10px}
+form{display:grid;grid-template-columns:1fr;gap:10px}
+label{color:#ddd;font-size:0.95rem}
+input{width:100%;padding:12px;border-radius:10px;border:none;background:#2e2e2e;color:#fff;font-size:1rem}
+.btn{margin-top:8px;padding:12px;border-radius:10px;border:none;background:#7b33ff;color:#fff;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>UvaPay</h1>
+  <form id="form">
+    <label>Nome completo</label>
+    <input id="nome" required>
+    <label>CPF</label>
+    <input id="cpf" required>
+    <label>E-mail</label>
+    <input id="email" type="email" required>
+    <label>Telefone</label>
+    <input id="telefone" required>
+    <label>Moedas VIPs</label>
+    <input id="moedas" readonly>
+    <button id="proximo" class="btn" disabled>Próximo</button>
+  </form>
+</div>
+<script>
+const params=new URLSearchParams(window.location.search);
+const moedas=params.get('moedas')||'';
+const valor=params.get('valor')||'';
+document.getElementById('moedas').value = moedas ? `${Number(moedas).toLocaleString('pt-BR')} Moedas VIPs` : '-';
+const inputs=[...document.querySelectorAll('input[required]')];
+const bot=document.getElementById('proximo');
+inputs.forEach(i=>i.addEventListener('input',()=>{
+  const ok=inputs.every(f=>f.value.trim()!=='') ;
+  bot.disabled = !ok;
+}));
+document.getElementById('form').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  const data={
+    nome:document.getElementById('nome').value,
+    cpf:document.getElementById('cpf').value,
+    email:document.getElementById('email').value,
+    telefone:document.getElementById('telefone').value,
+  };
+  const q=new URLSearchParams();
+  q.set('nome',data.nome);q.set('cpf',data.cpf);q.set('email',data.email);q.set('telefone',data.telefone);
+  q.set('valor',valor);q.set('moedas',moedas);
+  window.location.href=`forma_pagamento.html?${q.toString()}`;
+});
+</script>
+</div>
+</body>
+</html>
